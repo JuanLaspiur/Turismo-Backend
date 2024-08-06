@@ -132,7 +132,6 @@ const deleteUser = async (req, res = response) => {
   }
 };
 
-
 /*------------------------------------------------------------------------------------------------------------------ */
 const loginUser = async (req, res = response) => {
   const { email, password } = req.body;
@@ -174,7 +173,6 @@ const loginUser = async (req, res = response) => {
     });
   }
 };
-
 // probado y funcionando falta configurar el envio del email
 const requestPasswordReset = async (req, res = response) => {
   const { email } = req.body;
@@ -248,10 +246,6 @@ const resetPassword = async (req, res = response) => {
   }
 };
 
-//
-
-
-
 const uploadProfileImage = async (req, res = response) => {
   const { id } = req.params;
 
@@ -305,7 +299,27 @@ const uploadProfileImage = async (req, res = response) => {
   }
 };
 
-// "This method is used in the following `uploadProfileImage` and `createUser`."
+/*------------------------------------------------------------------------------------------------------------------ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//       FUNCIONES DE MODULARIZACION
+
+
 const saveImage =  async (base64Data, userID) => {
   // "This method is used in the following `uploadProfileImage` and `createUser`."
   const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
