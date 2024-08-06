@@ -1,5 +1,4 @@
 const { Router } = require('express');
-const upload = require('../middlewares/multer');
 
 // Controladores
 const {

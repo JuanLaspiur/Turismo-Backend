@@ -1,6 +1,5 @@
 const express = require('express');
 const morgan = require('morgan');
-const multer = require('multer');
 const { conn } = require('./database/config');
 const Routes = require('./routes/index');
 const uploadRoutes = require('./routes/upload'); 
@@ -14,19 +13,6 @@ app.use(morgan('dev'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
-
-const upload = multer({ storage: storage });
-
-app.use('/api/upload', upload.single('avatar'), uploadRoutes);
 
 app.use('/api', Routes);
 
