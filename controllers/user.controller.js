@@ -247,38 +247,30 @@ const resetPassword = async (req, res = response) => {
 const avatarPath = 'uploads/';
 
 const uploadProfileImage = async (req, res = response) => {
+  console.log('Cambiar imagen ')
   const { id } = req.params;
-
   try {
     const user = await User.findById(id);
-
     if (!user) {
       return res.status(404).json({
         msg: 'User not found',
         success: false,
       });
     }
-
-    // Verificar que el archivo esté disponible
     if (!req.file) {
       return res.status(400).json({
         msg: 'No file uploaded',
         success: false,
       });
     }
-
-    // Eliminar imagen antigua si existe
     if (user.avatar) {
       const oldPath = path.join(__dirname, '../', avatarPath, user.avatar);
       if (fs.existsSync(oldPath)) {
         fs.unlinkSync(oldPath);
       }
     }
-
-    // Actualizar el avatar del usuario
     user.avatar = req.file.filename;
     await user.save();
-
     res.json({
       msg: 'Profile image updated successfully',
       avatar: user.avatar,
