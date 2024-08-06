@@ -272,7 +272,7 @@ const uploadProfileImage = async (req, res = response) => {
       });
     }
 //
-    if (await saveProfileImage(base64Data, id)) {
+    if (await saveImage(base64Data, id)) {
       return res.status(400).json({
         msg: 'Invalid Base64 data',
         success: false,
@@ -306,7 +306,7 @@ const uploadProfileImage = async (req, res = response) => {
 };
 
 // "This method is used in the following `uploadProfileImage` and `createUser`."
-const saveProfileImage =  async (base64Data, userID) => {
+const saveImage =  async (base64Data, userID) => {
   // "This method is used in the following `uploadProfileImage` and `createUser`."
   const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
   if (!matches || matches.length !== 2) {
