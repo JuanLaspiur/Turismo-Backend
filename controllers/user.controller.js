@@ -9,53 +9,6 @@ const { generateRecoveryCode } = require('../helpers/recoveryCode');
 const sharp = require('sharp');
 // firma JWT
 const JWT_SECRET = 'turismo_4127';
-// ##############################################################################################################################
-// ##############################################################################################################################
-// ##############################################################################################################################
-// ##############################################################################################################################
-// ##############################################################################################################################
-
-const saveImage = async (userId, base64Data, uploadDir, oldFileName = null) => {
-  try {
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
-    // Decode Base64 data
-    const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
-    if (!matches || matches.length !== 2) {
-      throw new Error('Invalid Base64 data');
-    }
-
-    const imageBuffer = Buffer.from(base64Data.replace(/^data:image\/[a-zA-Z]*;base64,/, ''), 'base64');
-
-    // Convert to WebP and save
-    const fileName = `${userId}.webp`;
-    const filePath = path.join(uploadDir, fileName);
-
-    await sharp(imageBuffer)
-      .toFormat('webp')
-      .toFile(filePath);
-
-    // Delete old image if it exists
-    if (oldFileName) {
-      const oldPath = path.join(uploadDir, oldFileName);
-      if (fs.existsSync(oldPath)) {
-        fs.unlinkSync(oldPath);
-      }
-    }
-
-    return fileName;
-  } catch (error) {
-    throw new Error(`Error saving image: ${error.message}`);
-  }
-};
-
-// ##############################################################################################################################
-// ##############################################################################################################################
-// ##############################################################################################################################
-// ##############################################################################################################################
-
 
 const getUsers = async (req, res = response) => {
   try {
@@ -105,10 +58,9 @@ const createUser = async (req, res = response) => {
 
     const user = new User({ email, password: hashedPassword, ...rest });
 
-    // Handle image upload if provided
     if (img) {
-      const fileName = await saveImage(user._id.toString(), img, uploadDir);
-      user.avatar = fileName;
+      const fileName = await saveImage(img,user._id);
+      user.img = `${user._id}.webp`;;
     }
 
     await user.save();
@@ -299,13 +251,11 @@ const resetPassword = async (req, res = response) => {
 //
 
 
+
 const uploadProfileImage = async (req, res = response) => {
   const { id } = req.params;
-  const { base64Data } = req.body;
-  const uploadDir = path.join('./', 'assets', 'userAvatar');
 
   try {
-    // Find user
     const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({
@@ -314,23 +264,35 @@ const uploadProfileImage = async (req, res = response) => {
       });
     }
 
+    const { base64Data } = req.body;
     if (!base64Data) {
       return res.status(400).json({
         msg: 'Base64 data is required',
         success: false,
       });
     }
+//
+    if (await saveProfileImage(base64Data, id)) {
+      return res.status(400).json({
+        msg: 'Invalid Base64 data',
+        success: false,
+      });
+    }
 
-    // Save new image
-    const fileName = await saveImage(id, base64Data, uploadDir, user.avatar);
 
-    // Update user with new avatar
-    user.avatar = fileName;
+    if (user.img) {
+      const oldPath = path.join('../assets/userAvatar/', user.img);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+    }
+
+    user.img = `${id}.webp`;;
     await user.save();
 
     res.json({
       msg: 'Profile image updated successfully',
-      avatar: user.avatar,
+      img: user.img,
       success: true,
     });
   } catch (error) {
@@ -343,6 +305,31 @@ const uploadProfileImage = async (req, res = response) => {
   }
 };
 
+// "This method is used in the following `uploadProfileImage` and `createUser`."
+const saveProfileImage =  async (base64Data, userID) => {
+  // "This method is used in the following `uploadProfileImage` and `createUser`."
+  const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
+  if (!matches || matches.length !== 2) {
+    return null
+  }
+  
+  const ext = matches[1];
+  const imageBuffer = Buffer.from(base64Data.replace(/^data:image\/[a-zA-Z]*;base64,/, ''), 'base64');
+
+  const uploadDir = path.join('./', 'assets', 'userAvatar');
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
+  const fileName = `${userID}.webp`;
+  const filePath = path.join(uploadDir, fileName);
+
+  await sharp(imageBuffer)
+    .toFormat('webp')
+    .toFile(filePath);
+
+
+}
 
 
 module.exports = {
