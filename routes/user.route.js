@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const upload = require('../middlewares/multer');
 
 // Controladores
 const {
@@ -10,6 +11,7 @@ const {
   loginUser,
   requestPasswordReset,
   resetPassword,
+  uploadProfileImage,
 } = require('../controllers/user.controller');
 
 const router = Router();
@@ -27,5 +29,8 @@ router.post('/login', loginUser);
 // Rutas para recuperación de contraseñas
 router.post('/password-reset/request', requestPasswordReset);
 router.post('/password-reset/reset', resetPassword);
+
+// Upload Profile Image
+router.post("/upload-profile-image/:id", upload.single('avatar'), uploadProfileImage);
 
 module.exports = router;
