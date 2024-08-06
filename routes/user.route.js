@@ -30,6 +30,6 @@ router.post('/password-reset/request', requestPasswordReset);
 router.post('/password-reset/reset', resetPassword);
 
 // Upload Profile Image
-router.post("/upload-profile-image/:id", upload.single('avatar'), uploadProfileImage);
+router.post("/upload-profile-image/:id", uploadProfileImage);
 
 module.exports = router;

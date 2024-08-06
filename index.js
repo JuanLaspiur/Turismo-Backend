@@ -2,7 +2,6 @@ const express = require('express');
 const morgan = require('morgan');
 const { conn } = require('./database/config');
 const Routes = require('./routes/index');
-const uploadRoutes = require('./routes/upload'); 
 
 const app = express();
 const port = process.env.PORT || 3000;

@@ -1,9 +1,12 @@
 const { response } = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+const fs = require('fs');
 const User = require('../models/User');
 const { sendRecoveryEmail } = require('../helpers/mails');
 const { generateRecoveryCode } = require('../helpers/recoveryCode');
+const sharp = require('sharp');
 // firma JWT
 const JWT_SECRET = 'turismo_4127';
 
@@ -236,15 +239,13 @@ const resetPassword = async (req, res = response) => {
 
 //
 
-// // Configurar ruta para guardar imágenes
-const avatarPath = 'uploads/';
+
 
 const uploadProfileImage = async (req, res = response) => {
   const { id } = req.params;
 
   try {
     const user = await User.findById(id);
-
     if (!user) {
       return res.status(404).json({
         msg: 'User not found',
@@ -252,24 +253,45 @@ const uploadProfileImage = async (req, res = response) => {
       });
     }
 
-    // Verificar que el archivo esté disponible
-    if (!req.file) {
+    const { base64Data } = req.body;
+    if (!base64Data) {
       return res.status(400).json({
-        msg: 'No file uploaded',
+        msg: 'Base64 data is required',
         success: false,
       });
     }
 
-    // Eliminar imagen antigua si existe
+    const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
+    if (!matches || matches.length !== 2) {
+      return res.status(400).json({
+        msg: 'Invalid Base64 data',
+        success: false,
+      });
+    }
+
+    const ext = matches[1];
+    const imageBuffer = Buffer.from(base64Data.replace(/^data:image\/[a-zA-Z]*;base64,/, ''), 'base64');
+
+    const uploadDir = path.join('./', 'assets', 'userAvatar');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const fileName = `${id}.webp`;
+    const filePath = path.join(uploadDir, fileName);
+
+    await sharp(imageBuffer)
+      .toFormat('webp')
+      .toFile(filePath);
+
     if (user.avatar) {
-      const oldPath = path.join(__dirname, '../', avatarPath, user.avatar);
+      const oldPath = path.join('../assets/userAvatar/', user.avatar);
       if (fs.existsSync(oldPath)) {
         fs.unlinkSync(oldPath);
       }
     }
 
-    // Actualizar el avatar del usuario
-    user.avatar = req.file.filename;
+    user.avatar = fileName;
     await user.save();
 
     res.json({
@@ -278,9 +300,10 @@ const uploadProfileImage = async (req, res = response) => {
       success: true,
     });
   } catch (error) {
+    console.error('Error updating profile image:', error);
     res.status(500).json({
       msg: 'Error uploading profile image',
-      error,
+      error: error.message || error,
       success: false,
     });
   }
@@ -296,4 +319,5 @@ module.exports = {
   loginUser,
   requestPasswordReset,
   resetPassword,
+  uploadProfileImage
 };
