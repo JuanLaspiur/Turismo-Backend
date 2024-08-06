@@ -233,8 +233,10 @@ const resetPassword = async (req, res = response) => {
     });
   }
 };
+
+
 module.exports = {
-  getUsers,
+  getUsers, 
   getUserById,
   createUser,
   updateUser,
