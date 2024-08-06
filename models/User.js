@@ -32,7 +32,6 @@ const userSchema = Schema({
   },
   avatar: {
     type: String,
-    default: '',
   },
   recoveryToken: {
     type: String,

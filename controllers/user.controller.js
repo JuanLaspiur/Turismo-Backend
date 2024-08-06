@@ -9,6 +9,53 @@ const { generateRecoveryCode } = require('../helpers/recoveryCode');
 const sharp = require('sharp');
 // firma JWT
 const JWT_SECRET = 'turismo_4127';
+// ##############################################################################################################################
+// ##############################################################################################################################
+// ##############################################################################################################################
+// ##############################################################################################################################
+// ##############################################################################################################################
+
+const saveImage = async (userId, base64Data, uploadDir, oldFileName = null) => {
+  try {
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    // Decode Base64 data
+    const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
+    if (!matches || matches.length !== 2) {
+      throw new Error('Invalid Base64 data');
+    }
+
+    const imageBuffer = Buffer.from(base64Data.replace(/^data:image\/[a-zA-Z]*;base64,/, ''), 'base64');
+
+    // Convert to WebP and save
+    const fileName = `${userId}.webp`;
+    const filePath = path.join(uploadDir, fileName);
+
+    await sharp(imageBuffer)
+      .toFormat('webp')
+      .toFile(filePath);
+
+    // Delete old image if it exists
+    if (oldFileName) {
+      const oldPath = path.join(uploadDir, oldFileName);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+    }
+
+    return fileName;
+  } catch (error) {
+    throw new Error(`Error saving image: ${error.message}`);
+  }
+};
+
+// ##############################################################################################################################
+// ##############################################################################################################################
+// ##############################################################################################################################
+// ##############################################################################################################################
+
 
 const getUsers = async (req, res = response) => {
   try {
@@ -41,13 +88,15 @@ const getUserById = async (req, res = response) => {
 };
 
 const createUser = async (req, res = response) => {
-  const { email, password, ...rest } = req.body;
+  const { email, password, img, ...rest } = req.body;
+  const uploadDir = path.join('./', 'assets', 'userAvatar');
 
   try {
     const emailExists = await User.findOne({ email });
     if (emailExists) {
       return res.status(400).json({
         msg: 'Email already registered',
+        success: false,
       });
     }
 
@@ -55,20 +104,30 @@ const createUser = async (req, res = response) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = new User({ email, password: hashedPassword, ...rest });
-    
+
+    // Handle image upload if provided
+    if (img) {
+      const fileName = await saveImage(user._id.toString(), img, uploadDir);
+      user.avatar = fileName;
+    }
+
     await user.save();
 
     res.status(201).json({
       msg: 'User created successfully',
       user,
+      success: true,
     });
   } catch (error) {
+    console.error('Error creating user:', error);
     res.status(500).json({
       msg: 'Error creating user',
-      error
+      error: error.message || error,
+      success: false,
     });
   }
 };
+
 
 const updateUser = async (req, res = response) => {
   const { id } = req.params;
@@ -240,11 +299,13 @@ const resetPassword = async (req, res = response) => {
 //
 
 
-
 const uploadProfileImage = async (req, res = response) => {
   const { id } = req.params;
+  const { base64Data } = req.body;
+  const uploadDir = path.join('./', 'assets', 'userAvatar');
 
   try {
+    // Find user
     const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({
@@ -253,7 +314,6 @@ const uploadProfileImage = async (req, res = response) => {
       });
     }
 
-    const { base64Data } = req.body;
     if (!base64Data) {
       return res.status(400).json({
         msg: 'Base64 data is required',
@@ -261,36 +321,10 @@ const uploadProfileImage = async (req, res = response) => {
       });
     }
 
-    const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
-    if (!matches || matches.length !== 2) {
-      return res.status(400).json({
-        msg: 'Invalid Base64 data',
-        success: false,
-      });
-    }
+    // Save new image
+    const fileName = await saveImage(id, base64Data, uploadDir, user.avatar);
 
-    const ext = matches[1];
-    const imageBuffer = Buffer.from(base64Data.replace(/^data:image\/[a-zA-Z]*;base64,/, ''), 'base64');
-
-    const uploadDir = path.join('./', 'assets', 'userAvatar');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
-    const fileName = `${id}.webp`;
-    const filePath = path.join(uploadDir, fileName);
-
-    await sharp(imageBuffer)
-      .toFormat('webp')
-      .toFile(filePath);
-
-    if (user.avatar) {
-      const oldPath = path.join('../assets/userAvatar/', user.avatar);
-      if (fs.existsSync(oldPath)) {
-        fs.unlinkSync(oldPath);
-      }
-    }
-
+    // Update user with new avatar
     user.avatar = fileName;
     await user.save();
 
@@ -308,6 +342,7 @@ const uploadProfileImage = async (req, res = response) => {
     });
   }
 };
+
 
 
 module.exports = {
