@@ -17,7 +17,7 @@ const router = Router();
 
 // Rutas para usuarios
 router.get('/', getUsers);
-router.get('/userId/:id', getUserById);
+router.get('/:id', getUserById);
 router.put('/:id', updateUser);
 router.post('/', createUser);
 router.delete('/:id', deleteUser);

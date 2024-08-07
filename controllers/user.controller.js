@@ -10,6 +10,9 @@ const sharp = require('sharp');
 // firma JWT
 const JWT_SECRET = 'turismo_4127';
 
+
+
+
 const getUsers = async (req, res = response) => {
   try {
     const users = await User.find();
@@ -82,7 +85,7 @@ const createUser = async (req, res = response) => {
 
 const updateUser = async (req, res = response) => {
   const { id } = req.params;
-  const { email, password, ...rest } = req.body;
+  const { password, ...rest } = req.body;
 
   try {
     if (password) {
@@ -90,8 +93,9 @@ const updateUser = async (req, res = response) => {
       rest.password = await bcrypt.hash(password, salt);
     }
 
-    const user = await User.findByIdAndUpdate(id, rest, { new: true });
+    const user = await User.findByIdAndUpdate(id, rest, { new: true }); 
 
+  
     if (!user) {
       return res.status(404).json({
         msg: 'User not found',
