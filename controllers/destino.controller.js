@@ -3,14 +3,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const fs = require('fs');
-const Destinos = require('../models/Destino');
+const Destino = require('../models/Destino');
 const sharp = require('sharp');
 
 
 // Create a new destination
 const createDestino = async (req, res = response) => {
   try {
-    const destino = new Destinos(req.body);
+    const destino = new Destino(req.body);
     await destino.save();
     res.status(201).json({
       msg: 'Destination created successfully',
@@ -28,7 +28,7 @@ const createDestino = async (req, res = response) => {
 
 const getDestinos = async (req, res = response) => {
   try {
-    const destinos = await Destinos.find();
+    const destinos = await Destino.find();
     res.json({
       destinos,
       success: true,
@@ -46,7 +46,7 @@ const getDestinos = async (req, res = response) => {
 const getDestinoById = async (req, res = response) => {
   const { id } = req.params;
   try {
-    const destino = await Destinos.findById(id);
+    const destino = await Destino.findById(id);
     if (!destino) {
       return res.status(404).json({
         msg: 'Destination not found',
@@ -70,7 +70,7 @@ const getDestinoById = async (req, res = response) => {
 const updateDestino = async (req, res = response) => {
   const { id } = req.params;
   try {
-    const destino = await Destinos.findByIdAndUpdate(id, req.body, { new: true });
+    const destino = await Destino.findByIdAndUpdate(id, req.body, { new: true });
     if (!destino) {
       return res.status(404).json({
         msg: 'Destination not found',
@@ -95,7 +95,7 @@ const updateDestino = async (req, res = response) => {
 const deleteDestino = async (req, res = response) => {
   const { id } = req.params;
   try {
-    const destino = await Destinos.findByIdAndDelete(id);
+    const destino = await Destino.findByIdAndDelete(id);
     if (!destino) {
       return res.status(404).json({
         msg: 'Destination not found',
