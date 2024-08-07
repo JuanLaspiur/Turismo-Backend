@@ -11,7 +11,7 @@ const destinoSchema = new Schema({
     type: String,
     required: true
   },
-  googlePosition: {
+  position: {
     latitude: {
       type: Number,
       required: true
@@ -20,6 +20,9 @@ const destinoSchema = new Schema({
       type: Number,
       required: true
     }
+  },
+  googleRating: {
+    type: Number,
   },
   rating: {
     type: Number,

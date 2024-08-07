@@ -26,7 +26,6 @@ const createDestino = async (req, res = response) => {
   }
 };
 
-// Get all destinations
 const getDestinos = async (req, res = response) => {
   try {
     const destinos = await Destinos.find();
