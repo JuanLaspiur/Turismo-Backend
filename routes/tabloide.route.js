@@ -9,10 +9,10 @@ const {
 
 const router = Router();
 
-router.post('/', createTabloide);       // Create
-router.get('/', getTabloides);           // Read all
-router.get('/:id', getTabloideById);    // Read one
-router.put('/:id', updateTabloide);    // Update
-router.delete('/:id', deleteTabloide); // Delete
+router.post('/', createTabloide);    
+router.get('/', getTabloides);          
+router.get('/:id', getTabloideById);  
+router.put('/:id', updateTabloide);   
+router.delete('/:id', deleteTabloide); 
 
 module.exports = router;
