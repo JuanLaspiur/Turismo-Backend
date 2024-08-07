@@ -8,7 +8,7 @@ const getTabloides = async (req, res = response) => {
     try {
         const tabloides = await Tabloide.find();
 
-        
+
         res.json({ tabloides });
     } catch (error) {
         res.status(500).json({
@@ -52,12 +52,9 @@ const createTabloide = async (req, res = response) => {
         await tabloide.save();
 
 
-        let imgFileName = null;
         if (img && typeof img === 'string') {
-            imgFileName = await saveImage(img, tabloide._id.toString());
-        }
-        if (imgFileName) {
-            tabloide.img = imgFileName;
+           await saveImage(img, tabloide._id);
+            tabloide.img =`${tabloide._id}.webp`;
             await tabloide.save();
         }
 
@@ -128,29 +125,30 @@ const deleteTabloide = async (req, res = response) => {
 
 // FUNCIONES DE MODULARIZACION
 
-const saveImage = async (base64Data, tabloideID) => {
+const saveImage =  async (base64Data, tabloideID) => {
+    // "This method is used in the following `uploadProfileImage` and `createUser`."
     const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
     if (!matches || matches.length !== 2) {
-        return null;
+      return null
     }
-
+    
     const ext = matches[1];
     const imageBuffer = Buffer.from(base64Data.replace(/^data:image\/[a-zA-Z]*;base64,/, ''), 'base64');
-
-    const uploadDir = path.join(__dirname, '..', 'assets', 'tabloides');
+  
+    const uploadDir = path.join('./', 'assets', 'tabloides');
     if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
-
+  
     const fileName = `${tabloideID}.webp`;
     const filePath = path.join(uploadDir, fileName);
-
+  
     await sharp(imageBuffer)
-        .toFormat('webp')
-        .toFile(filePath);
-
-    return fileName;
-};
+      .toFormat('webp')
+      .toFile(filePath);
+  
+  
+  }
 
 module.exports = {
     getTabloides,
