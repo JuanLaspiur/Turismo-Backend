@@ -11,7 +11,7 @@ const destinoSchema = new Schema({
     type: String,
     required: true
   },
-  position: {
+  positionGoogle: {
     latitude: {
       type: Number,
       required: true
@@ -21,19 +21,16 @@ const destinoSchema = new Schema({
       required: true
     }
   },
-  googleRating: {
-    type: Number,
-  },
   rating: {
     type: Number,
     min: 0,
     max: 5,
     default: 0
   },
-  userReview: [ // opionion de usuario
+  reference: [ // opionion de usuario
     {
       type: Schema.Types.ObjectId,
-      ref: 'UserReview'
+      ref: 'Reference'
     }
   ]
 }, { timestamps: true });
