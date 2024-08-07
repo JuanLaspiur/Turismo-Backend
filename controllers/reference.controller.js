@@ -8,7 +8,7 @@ const User = require('../models/User');
 // Obtener todas las referencias
 const getReferences = async (req, res = response) => {
     try {
-        const references = await Reference.find().populate('userId'); // Popula la referencia al usuario
+        const references = await Reference.find();
         res.json({ references });
     } catch (error) {
         res.status(500).json({
@@ -22,7 +22,7 @@ const getReferences = async (req, res = response) => {
 const getReferencesById = async (req, res = response) => {
     const { id } = req.params;
     try {
-        const reference = await Reference.findById(id).populate('userId'); // Popula la referencia al usuario
+        const reference = await Reference.findById(id); 
         if (!reference) {
             return res.status(404).json({
                 msg: 'Reference not found'
@@ -39,38 +39,39 @@ const getReferencesById = async (req, res = response) => {
 
 // Crear una nueva referencia
 const createReference = async (req, res = response) => {
-    const { userId, img, ...rest } = req.body;
+  const { userId, img, ...rest } = req.body;
 
-    try {
-        // Verifica que el userId exista
+  try {
         const user = await User.findById(userId);
-        if (!user) {
-            return res.status(400).json({
-                msg: 'User not found'
-            });
-        }
+      if (!user) {
+          return res.status(404).json({
+              msg: 'User not found'
+          });
+      }
 
-        const reference = new Reference({ userId, ...rest });
-        await reference.save();
+      const reference = new Reference({ userId, ...rest });
+      await reference.save();
 
-        if (img && typeof img === 'string') {
-            await saveImage(img, reference._id);
-            reference.img = `${reference._id}.webp`;
-            await reference.save();
-        }
+      if (img && typeof img === 'string') {
+          await saveImage(img, reference._id);
+          reference.img = `${reference._id}.webp`;
+          await reference.save();
+      }
 
-        res.status(201).json({
-            msg: 'Reference created successfully',
-            reference,
-            success: true
-        });
-    } catch (error) {
-        res.status(500).json({
-            msg: 'Error creating reference',
-            error,
-            success: false
-        });
-    }
+
+
+      res.status(201).json({
+          msg: 'Reference created successfully',
+          reference,
+          success: true
+      });
+  } catch (error) {
+      res.status(500).json({
+          msg: 'Error creating reference',
+          error,
+          success: false
+      });
+  }
 };
 
 // Actualizar una referencia existente
@@ -86,10 +87,8 @@ const updateReference = async (req, res = response) => {
             });
         }
 
-        // Actualiza todos los campos del documento
         Object.assign(reference, updateFields);
 
-        // Maneja la actualización de la imagen
         if (img && typeof img === 'string') {
             await saveImage(img, reference._id);
             reference.img = `${reference._id}.webp`;
@@ -109,7 +108,7 @@ const updateReference = async (req, res = response) => {
     }
 };
 
-// Eliminar una referencia
+
 const deleteReference = async (req, res = response) => {
     const { id } = req.params;
     try {
