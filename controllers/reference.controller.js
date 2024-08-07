@@ -8,7 +8,7 @@ const User = require('../models/User');
 const getReferences = async (req, res = response) => {
     try {
         const references = await Reference.find();
-        res.json({ references });
+        res.json({ data: references });
     } catch (error) {
         res.status(500).json({
             msg: 'Error fetching references',
@@ -28,7 +28,7 @@ const getReferenceById = async (req, res = response) => {
         }
 
         
-        res.json({ reference });
+        res.json({ data: reference });
     } catch (error) {
         res.status(500).json({
             msg: 'Error fetching reference',
@@ -61,7 +61,7 @@ const createReference = async (req, res = response) => {
 
       res.status(201).json({
           msg: 'Reference created successfully',
-          reference,
+          data: reference,
           success: true
       });
   } catch (error) {
@@ -96,7 +96,7 @@ const updateReference = async (req, res = response) => {
 
         res.json({
             msg: 'Reference updated successfully',
-            reference
+            data: reference
         });
     } catch (error) {
         res.status(500).json({

@@ -14,7 +14,7 @@ const createDestino = async (req, res = response) => {
     await destino.save();
     res.status(201).json({
       msg: 'Destination created successfully',
-      destino,
+      data: destino,
       success: true,
     });
   } catch (error) {
@@ -30,7 +30,7 @@ const getDestinos = async (req, res = response) => {
   try {
     const destinos = await Destino.find();
     res.json({
-      destinos,
+      data: destinos,
       success: true,
     });
   } catch (error) {
@@ -54,7 +54,7 @@ const getDestinoById = async (req, res = response) => {
       });
     }
     res.json({
-      destino,
+      data: destino,
       success: true,
     });
   } catch (error) {
@@ -79,7 +79,7 @@ const updateDestino = async (req, res = response) => {
     }
     res.json({
       msg: 'Destination updated successfully',
-      destino,
+      data: destino,
       success: true,
     });
   } catch (error) {

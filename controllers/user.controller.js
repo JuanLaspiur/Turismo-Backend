@@ -13,7 +13,7 @@ const JWT_SECRET = 'turismo_4127';
 const getUsers = async (req, res = response) => {
   try {
     const users = await User.find();
-    res.json({ users });
+    res.json({ data: users });
   } catch (error) {
     res.status(500).json({
       msg: 'Error fetching users',
@@ -31,7 +31,7 @@ const getUserById = async (req, res = response) => {
         msg: 'User not found',
       });
     }
-    res.json({ user });
+    res.json({ data: user });
   } catch (error) {
     res.status(500).json({
       msg: 'Error fetching user',
@@ -66,7 +66,7 @@ const createUser = async (req, res = response) => {
 
     res.status(201).json({
       msg: 'User created successfully',
-      user,
+      data: user,
       success: true,
     });
   } catch (error) {
@@ -100,7 +100,7 @@ const updateUser = async (req, res = response) => {
 
     res.json({
       msg: 'User updated successfully',
-      user,
+      data: user,
     });
   } catch (error) {
     res.status(500).json({
@@ -161,7 +161,7 @@ const loginUser = async (req, res = response) => {
 
     res.json({
       msg: 'Login successful',
-      token,
+      data: token,
       success: true
     });
   } catch (error) {
@@ -195,7 +195,6 @@ const requestPasswordReset = async (req, res = response) => {
     res.json({
       msg: 'Password recovery email sent successfully',
       success: true,
-      code: recoveryCode
 
     });
   } catch (error) {
@@ -285,7 +284,7 @@ const uploadProfileImage = async (req, res = response) => {
 
     res.json({
       msg: 'Profile image updated successfully',
-      img: user.img,
+      data: user.img,
       success: true,
     });
   } catch (error) {

@@ -9,7 +9,7 @@ const getTabloides = async (req, res = response) => {
         const tabloides = await Tabloide.find();
 
 
-        res.json({ tabloides });
+        res.json({ data: tabloides });
     } catch (error) {
         res.status(500).json({
             msg: 'Error fetching tabloides',
@@ -30,7 +30,7 @@ const getTabloideById = async (req, res = response) => {
         }
 
 
-        res.json({ tabloide });
+        res.json({ data: tabloide });
     } catch (error) {
         res.status(500).json({
             msg: 'Error fetching tabloide',
@@ -62,7 +62,7 @@ const createTabloide = async (req, res = response) => {
 
         res.status(201).json({
             msg: 'Tabloide created successfully',
-            tabloide,
+            data: tabloide,
             success: true
         });
 
@@ -101,7 +101,7 @@ const updateTabloide = async (req, res = response) => {
 
         res.json({
             msg: 'Tabloide updated successfully',
-            tabloide
+           data: tabloide
         });
     } catch (error) {
         res.status(500).json({

@@ -10,7 +10,7 @@ const getComments = async (req, res = response) => {
     const comments = await Comment.find();
 
 
-    res.json({ comments });
+    res.json({ data: comments });
 
   } catch (error) {
     res.status(500).json({
@@ -31,7 +31,7 @@ const getCommentById = async (req, res = response) => {
     }
 
    
-    res.json({ comment });
+    res.json({ data: comment });
   } catch (error) {
     res.status(500).json({
         msg: 'Error fetching comment',
@@ -64,7 +64,7 @@ const createComment = async (req, res = response) => {
 
         res.status(201).json({
             msg: 'Comment created successfully',
-            comment,
+            data: comment,
             success: true
         });
     } catch (error) {
@@ -95,7 +95,7 @@ const updateComment = async (req, res = response) => {
   
       res.json({
         msg: "Comment updated successfully",
-        comment,
+        data: comment,
       });
     } catch (error) {
       res.status(500).json({
