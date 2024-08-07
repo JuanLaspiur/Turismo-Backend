@@ -1,13 +1,15 @@
 const router = require('express').Router();
 
-const userRoute = require('./user.route');
-const destinoRoute = require('./destino.route')
-const tabloideRoute = require('./tabloide.route')
-const referenceRoute = require('./reference.route')
+const userRoute = require('./user.routes');
+const destinoRoute = require('./destino.routes');
+const tabloideRoute = require('./tabloide.routes');
+const referenceRoute = require('./reference.routes');
+const commentRoute = require('./comment.routes');
 
 router.use('/users', userRoute);
 router.use('/destinos', destinoRoute);
-router.use('/tabloides', tabloideRoute)
-router.use('/references', referenceRoute)
+router.use('/tabloides', tabloideRoute);
+router.use('/references', referenceRoute);
+router.use('/comments', commentRoute);
 
 module.exports = router;
