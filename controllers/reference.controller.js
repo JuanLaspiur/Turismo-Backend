@@ -5,7 +5,6 @@ const sharp = require('sharp');
 const Reference = require('../models/Reference');
 const User = require('../models/User');
 
-// Obtener todas las referencias
 const getReferences = async (req, res = response) => {
     try {
         const references = await Reference.find();
@@ -18,8 +17,7 @@ const getReferences = async (req, res = response) => {
     }
 };
 
-// Obtener una referencia por ID
-const getReferencesById = async (req, res = response) => {
+const getReferenceById = async (req, res = response) => {
     const { id } = req.params;
     try {
         const reference = await Reference.findById(id); 
@@ -28,6 +26,8 @@ const getReferencesById = async (req, res = response) => {
                 msg: 'Reference not found'
             });
         }
+
+        
         res.json({ reference });
     } catch (error) {
         res.status(500).json({
@@ -37,7 +37,6 @@ const getReferencesById = async (req, res = response) => {
     }
 };
 
-// Crear una nueva referencia
 const createReference = async (req, res = response) => {
   const { userId, img, ...rest } = req.body;
 
@@ -74,7 +73,6 @@ const createReference = async (req, res = response) => {
   }
 };
 
-// Actualizar una referencia existente
 const updateReference = async (req, res = response) => {
     const { id } = req.params;
     const { img, ...updateFields } = req.body;
@@ -129,7 +127,6 @@ const deleteReference = async (req, res = response) => {
     }
 };
 
-// Función para guardar la imagen
 const saveImage = async (base64Data, referenceID) => {
     const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
     if (!matches || matches.length !== 2) {
@@ -154,7 +151,7 @@ const saveImage = async (base64Data, referenceID) => {
 
 module.exports = {
     getReferences,
-    getReferencesById,
+    getReferenceById,
     createReference,
     updateReference,
     deleteReference

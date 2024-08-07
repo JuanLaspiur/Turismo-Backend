@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const {
     getReferences,
-    getReferencesById,
+    getReferenceById,
     createReference,
     updateReference,
     deleteReference,
@@ -11,7 +11,7 @@ const router = Router();
 
 router.post('/', createReference);    
 router.get('/',  getReferences);          
-router.get('/:id', getReferencesById);  
+router.get('/:id', getReferenceById);  
 router.put('/:id', updateReference);   
 router.delete('/:id', deleteReference); 
 
