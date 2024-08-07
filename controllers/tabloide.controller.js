@@ -77,15 +77,26 @@ const createTabloide = async (req, res = response) => {
 
 const updateTabloide = async (req, res = response) => {
     const { id } = req.params;
-    const { nro_posicion, status, img, ...rest } = req.body;
-    try {
-        const tabloide = await Tabloide.findByIdAndUpdate(id, req.body, { new: true });
+    const { img, ...updateFields } = req.body;
 
+    try {
+        const tabloide = await Tabloide.findById(id);
         if (!tabloide) {
             return res.status(404).json({
                 msg: 'Tabloide not found'
             });
         }
+        Object.assign(tabloide, updateFields);
+
+        // Maneja la actualización de la imagen
+        if (img && typeof img === 'string') {
+            await saveImage(img, tabloide._id);
+            tabloide.img = `${tabloide._id}.webp`;
+        }
+
+        await tabloide.save();
+
+
 
 
         res.json({
@@ -99,7 +110,6 @@ const updateTabloide = async (req, res = response) => {
         });
     }
 };
-
 const deleteTabloide = async (req, res = response) => {
     const { id } = req.params;
     try {
