@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 const destinoSchema = new Schema({
-  featuredImage: String,
+  img: String,
   imageGallery: [String],
   name: {
     type: String,
