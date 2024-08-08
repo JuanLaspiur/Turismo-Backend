@@ -11,11 +11,11 @@ const sharp = require('sharp');
 const JWT_SECRET = 'turismo_4127';
 
 
-
-
 const getUsers = async (req, res = response) => {
   try {
     const users = await User.find();
+
+
     res.json({ data: users });
   } catch (error) {
     res.status(500).json({
@@ -34,6 +34,9 @@ const getUserById = async (req, res = response) => {
         msg: 'User not found',
       });
     }
+
+
+
     res.json({ data: user });
   } catch (error) {
     res.status(500).json({
@@ -54,18 +57,17 @@ const createUser = async (req, res = response) => {
         success: false,
       });
     }
-
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
     const user = new User({ email, password: hashedPassword, ...rest });
 
     if (img) {
       const fileName = await saveImage(img,user._id);
       user.img = `${user._id}.webp`;;
     }
-
     await user.save();
+
+    
 
     res.status(201).json({
       msg: 'User created successfully',
@@ -86,21 +88,20 @@ const createUser = async (req, res = response) => {
 const updateUser = async (req, res = response) => {
   const { id } = req.params;
   const { password, ...rest } = req.body;
-
   try {
     if (password) {
       const salt = await bcrypt.genSalt(10);
       rest.password = await bcrypt.hash(password, salt);
     }
-
     const user = await User.findByIdAndUpdate(id, rest, { new: true }); 
-
-  
     if (!user) {
       return res.status(404).json({
         msg: 'User not found',
       });
     }
+
+
+
 
     res.json({
       msg: 'User updated successfully',
@@ -124,6 +125,8 @@ const deleteUser = async (req, res = response) => {
       });
     }
 
+
+
     res.json({
       msg: 'User deleted successfully',
     });
@@ -138,7 +141,6 @@ const deleteUser = async (req, res = response) => {
 /*------------------------------------------------------------------------------------------------------------------ */
 const loginUser = async (req, res = response) => {
   const { email, password } = req.body;
-
   try {
     // Buscar el usuario por correo electrónico
     const user = await User.findOne({ email });
@@ -148,7 +150,6 @@ const loginUser = async (req, res = response) => {
         success: false
       });
     }
-
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({
@@ -156,12 +157,13 @@ const loginUser = async (req, res = response) => {
         success: false
       });
     }
-
     const token = jwt.sign(
       { id: user._id, email: user.email },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
+
+
 
     res.json({
       msg: 'Login successful',
@@ -179,7 +181,6 @@ const loginUser = async (req, res = response) => {
 // probado y funcionando falta configurar el envio del email
 const requestPasswordReset = async (req, res = response) => {
   const { email } = req.body;
-
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -188,13 +189,12 @@ const requestPasswordReset = async (req, res = response) => {
         success: false,
       });
     }
-
     const recoveryCode = generateRecoveryCode();
     user.recoveryToken = recoveryCode;
-
     await user.save();
-
     await sendRecoveryEmail(email, recoveryCode);
+
+
 
     res.json({
       msg: 'Password recovery email sent successfully',
@@ -212,7 +212,6 @@ const requestPasswordReset = async (req, res = response) => {
 };
 const resetPassword = async (req, res = response) => {
   const { email, token, newPassword } = req.body;
-
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -221,19 +220,18 @@ const resetPassword = async (req, res = response) => {
         success: false,
       });
     }
-
     if (user.recoveryToken !== token) {
       return res.status(400).json({
         msg: 'Invalid or expired code',
         success: false,
       });
     }
-
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
     user.recoveryToken = undefined; 
-
     await user.save();
+
+
 
     res.json({
       msg: 'Password reset successfully',
@@ -250,7 +248,6 @@ const resetPassword = async (req, res = response) => {
 
 const uploadProfileImage = async (req, res = response) => {
   const { id } = req.params;
-
   try {
     const user = await User.findById(id);
     if (!user) {
@@ -259,7 +256,6 @@ const uploadProfileImage = async (req, res = response) => {
         success: false,
       });
     }
-
     const { base64Data } = req.body;
     if (!base64Data) {
       return res.status(400).json({
@@ -267,24 +263,22 @@ const uploadProfileImage = async (req, res = response) => {
         success: false,
       });
     }
-//
     if (await saveImage(base64Data, id)) {
       return res.status(400).json({
         msg: 'Invalid Base64 data',
         success: false,
       });
     }
-
-
     if (user.img) {
       const oldPath = path.join('../assets/userAvatar/', user.img);
       if (fs.existsSync(oldPath)) {
         fs.unlinkSync(oldPath);
       }
     }
-
     user.img = `${id}.webp`;;
     await user.save();
+
+
 
     res.json({
       msg: 'Profile image updated successfully',

@@ -9,6 +9,7 @@ const getTabloides = async (req, res = response) => {
         const tabloides = await Tabloide.find();
 
 
+
         res.json({ data: tabloides });
     } catch (error) {
         res.status(500).json({
@@ -78,7 +79,6 @@ const createTabloide = async (req, res = response) => {
 const updateTabloide = async (req, res = response) => {
     const { id } = req.params;
     const { img, ...updateFields } = req.body;
-
     try {
         const tabloide = await Tabloide.findById(id);
         if (!tabloide) {
@@ -98,7 +98,6 @@ const updateTabloide = async (req, res = response) => {
 
 
 
-
         res.json({
             msg: 'Tabloide updated successfully',
            data: tabloide
@@ -114,12 +113,12 @@ const deleteTabloide = async (req, res = response) => {
     const { id } = req.params;
     try {
         const tabloide = await Tabloide.findByIdAndDelete(id);
-
         if (!tabloide) {
             return res.status(404).json({
                 msg: 'Tabloide not found'
             });
         }
+
 
 
         res.json({

@@ -11,7 +11,6 @@ const getComments = async (req, res = response) => {
 
 
     res.json({ data: comments });
-
   } catch (error) {
     res.status(500).json({
       msg: "Error fetching comments",
@@ -52,7 +51,6 @@ const createComment = async (req, res = response) => {
                 msg: 'User not found'
             });
         }
-
         const comment = new Comment({
             userId,
             text
@@ -93,6 +91,7 @@ const updateComment = async (req, res = response) => {
   
       await comment.save();
   
+      
       res.json({
         msg: "Comment updated successfully",
         data: comment,

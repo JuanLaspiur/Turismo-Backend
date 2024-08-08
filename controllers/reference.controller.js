@@ -86,13 +86,13 @@ const updateReference = async (req, res = response) => {
         }
 
         Object.assign(reference, updateFields);
-
         if (img && typeof img === 'string') {
             await saveImage(img, reference._id);
             reference.img = `${reference._id}.webp`;
         }
-
         await reference.save();
+
+
 
         res.json({
             msg: 'Reference updated successfully',
@@ -116,6 +116,9 @@ const deleteReference = async (req, res = response) => {
                 msg: 'Reference not found'
             });
         }
+
+
+        
         res.json({
             msg: 'Reference deleted successfully'
         });

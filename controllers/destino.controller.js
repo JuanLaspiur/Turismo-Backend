@@ -7,11 +7,12 @@ const Destino = require('../models/Destino');
 const sharp = require('sharp');
 
 
-// Create a new destination
 const createDestino = async (req, res = response) => {
   try {
     const destino = new Destino(req.body);
     await destino.save();
+
+
     res.status(201).json({
       msg: 'Destination created successfully',
       data: destino,
@@ -29,6 +30,8 @@ const createDestino = async (req, res = response) => {
 const getDestinos = async (req, res = response) => {
   try {
     const destinos = await Destino.find();
+
+
     res.json({
       data: destinos,
       success: true,
@@ -42,7 +45,6 @@ const getDestinos = async (req, res = response) => {
   }
 };
 
-// Get a single destination by ID
 const getDestinoById = async (req, res = response) => {
   const { id } = req.params;
   try {
@@ -53,6 +55,8 @@ const getDestinoById = async (req, res = response) => {
         success: false,
       });
     }
+
+
     res.json({
       data: destino,
       success: true,
@@ -66,7 +70,6 @@ const getDestinoById = async (req, res = response) => {
   }
 };
 
-// Update a destination by ID
 const updateDestino = async (req, res = response) => {
   const { id } = req.params;
   try {
@@ -77,6 +80,8 @@ const updateDestino = async (req, res = response) => {
         success: false,
       });
     }
+
+
     res.json({
       msg: 'Destination updated successfully',
       data: destino,
@@ -91,7 +96,6 @@ const updateDestino = async (req, res = response) => {
   }
 };
 
-// Delete a destination by ID
 const deleteDestino = async (req, res = response) => {
   const { id } = req.params;
   try {
@@ -102,6 +106,8 @@ const deleteDestino = async (req, res = response) => {
         success: false,
       });
     }
+
+    
     res.json({
       msg: 'Destination deleted successfully',
       success: true,

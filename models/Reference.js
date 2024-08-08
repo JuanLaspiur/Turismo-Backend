@@ -20,7 +20,7 @@ const reference = new Schema({
         max: 5,
         required: true
     },
-    comment: {
+    text: {
         type: String,
         trim: true,
         maxlength: 500
