@@ -1,18 +1,9 @@
 const { response } = require('express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const path = require('path');
-const fs = require('fs');
-const Destino = require('../models/Destino');
-const sharp = require('sharp');
-
+const destinoService = require('../services/destinoService');
 
 const createDestino = async (req, res = response) => {
   try {
-    const destino = new Destino(req.body);
-    await destino.save();
-
-
+    const destino = await destinoService.createDestino(req.body);
     res.status(201).json({
       msg: 'Destination created successfully',
       data: destino,
@@ -29,9 +20,7 @@ const createDestino = async (req, res = response) => {
 
 const getDestinos = async (req, res = response) => {
   try {
-    const destinos = await Destino.find();
-
-
+    const destinos = await destinoService.getDestinos();
     res.json({
       data: destinos,
       success: true,
@@ -48,14 +37,13 @@ const getDestinos = async (req, res = response) => {
 const getDestinoById = async (req, res = response) => {
   const { id } = req.params;
   try {
-    const destino = await Destino.findById(id);
+    const destino = await destinoService.getDestinoById(id);
     if (!destino) {
       return res.status(404).json({
         msg: 'Destination not found',
         success: false,
       });
     }
-
 
     res.json({
       data: destino,
@@ -73,14 +61,13 @@ const getDestinoById = async (req, res = response) => {
 const updateDestino = async (req, res = response) => {
   const { id } = req.params;
   try {
-    const destino = await Destino.findByIdAndUpdate(id, req.body, { new: true });
+    const destino = await destinoService.updateDestino(id, req.body);
     if (!destino) {
       return res.status(404).json({
         msg: 'Destination not found',
         success: false,
       });
     }
-
 
     res.json({
       msg: 'Destination updated successfully',
@@ -99,7 +86,7 @@ const updateDestino = async (req, res = response) => {
 const deleteDestino = async (req, res = response) => {
   const { id } = req.params;
   try {
-    const destino = await Destino.findByIdAndDelete(id);
+    const destino = await destinoService.deleteDestino(id);
     if (!destino) {
       return res.status(404).json({
         msg: 'Destination not found',
@@ -107,7 +94,6 @@ const deleteDestino = async (req, res = response) => {
       });
     }
 
-    
     res.json({
       msg: 'Destination deleted successfully',
       success: true,
@@ -128,4 +114,3 @@ module.exports = {
   updateDestino,
   deleteDestino,
 };
-
