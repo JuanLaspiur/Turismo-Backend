@@ -70,10 +70,15 @@ const updateUser = async (id, body) => {
     const salt = await bcrypt.genSalt(10);
     rest.password = await bcrypt.hash(password, salt);
   }
-
   const user = await User.findByIdAndUpdate(id, rest, { new: true });
   if (!user) {
     throw new Error('User not found');
+  }
+
+  if(body.img) {
+    saveImage(body.img, id)
+    user.img = `${id}.webp`;
+    await user.save();
   }
 
   return user;
