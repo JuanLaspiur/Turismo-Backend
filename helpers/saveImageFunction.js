@@ -5,7 +5,6 @@ const sharp = require('sharp');
 
 
 const saveImage = async (base64Data, companyID, type) => {
-  console.log(`Saving image for type: ${type}`);
   const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
   if (!matches || matches.length !== 2) {
     throw new Error('Invalid image data');
@@ -47,8 +46,10 @@ const getUploadDirectory = (type) => {
         return path.join('./', 'assets', 'companies', 'coverImg');
       case "user-img":
         return path.join('./', 'assets', 'user-img');  
+      case "tabloide-img":
+        return path.join('./', 'assets', 'tabloides');  
       default:
-        throw new Error(`Unsupported image type: ${type}`);
+        throw new Error(`Unsupported image type: ${type} in helpers\saveImageFunction.js`);
     }
   };
   
