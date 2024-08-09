@@ -4,6 +4,9 @@ const userService = require('../services/userService');
 
 const getUsers = async (req, res = response) => {
   try {
+ 
+ 
+// Que solo sí el usuario es ADMIN_ROLE se traiga los usuarios.
     const users = await userService.getUsers();
     res.json({ data: users });
   } catch (error) {
@@ -137,7 +140,7 @@ const resetPassword = async (req, res = response) => {
 const uploadProfileImage = async (req, res = response) => {
   const { id } = req.params;
   try {
-    const img = await userService.uploadProfileImage(id, req.body.base64Data);
+    const img = await userService.uploadProfileImage(id, req.body.img);
     res.json({
       msg: 'Profile image updated successfully',
       data: img,

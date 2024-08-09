@@ -8,8 +8,9 @@ const User = require('../models/User');
 const { sendRecoveryEmail } = require('../helpers/mails');
 const { generateRecoveryCode } = require('../helpers/recoveryCode');
 
-// firma JWT
-const JWT_SECRET = 'turismo_4127';
+require('dotenv').config();
+const JWT_SECRET = process.env.JWT_SECRET;
+
 
 const saveImage = async (base64Data, userID) => {
   const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
@@ -151,17 +152,17 @@ const resetPassword = async (body) => {
   return user;
 };
 
-const uploadProfileImage = async (id, base64Data) => {
+const uploadProfileImage = async (id, img) => {
   const user = await User.findById(id);
   if (!user) {
     throw new Error('User not found');
   }
 
-  if (!base64Data) {
+  if (!img) {
     throw new Error('Base64 data is required');
   }
 
-  const fileName = await saveImage(base64Data, id);
+  const fileName = await saveImage(img, id);
   if (!fileName) {
     throw new Error('Invalid Base64 data');
   }
