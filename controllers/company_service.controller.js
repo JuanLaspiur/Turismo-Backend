@@ -1,10 +1,9 @@
-const { response } = require("express");
-const CompanyService = require('../models/CompanyService');
-const { saveImage } = require('../helpers/saveImageFunction');
+const { response } = require('express');
+const companyService = require('../services/company_serviceService');
 
 const getCompaniesServices = async (req, res = response) => {
     try {
-        const services = await CompanyService.find();
+        const services = await companyService.getAllServices();
         res.json({
             success: true,
             data: services
@@ -13,7 +12,7 @@ const getCompaniesServices = async (req, res = response) => {
         console.error(error);
         res.status(500).json({
             success: false,
-            msg: 'Error al obtener los servicios de compañías'
+            msg: error.message
         });
     }
 };
@@ -21,13 +20,7 @@ const getCompaniesServices = async (req, res = response) => {
 const getCompanyServiceById = async (req, res = response) => {
     const { id } = req.params;
     try {
-        const service = await CompanyService.findById(id);
-        if (!service) {
-            return res.status(404).json({
-                success: false,
-                msg: 'Servicio de compañía no encontrado'
-            });
-        }
+        const service = await companyService.getServiceById(id);
         res.json({
             success: true,
             data: service
@@ -36,7 +29,7 @@ const getCompanyServiceById = async (req, res = response) => {
         console.error(error);
         res.status(500).json({
             success: false,
-            msg: 'Error al obtener el servicio de compañía'
+            msg: error.message
         });
     }
 };
@@ -44,15 +37,7 @@ const getCompanyServiceById = async (req, res = response) => {
 const createCompanyService = async (req, res = response) => {
     const { name, description, img, price } = req.body;
     try {
-        const service = new CompanyService({ name, description, img, price });
-
-        if (img && typeof img === 'string') {
-            await saveImage(img, service._id, "companyService-img");
-            service.img = `${service._id}.webp`;
-            await service.save();
-          }
-
-        await service.save();
+        const service = await companyService.createService({ name, description, img, price });
         res.status(201).json({
             success: true,
             data: service
@@ -61,7 +46,7 @@ const createCompanyService = async (req, res = response) => {
         console.error(error);
         res.status(500).json({
             success: false,
-            msg: 'Error al crear el servicio de compañía'
+            msg: error.message
         });
     }
 };
@@ -70,20 +55,7 @@ const updateCompanyService = async (req, res = response) => {
     const { id } = req.params;
     const updates = req.body;
     try {
-        const service = await CompanyService.findByIdAndUpdate(id, updates, { new: true });
-        if (!service) {
-            return res.status(404).json({
-                success: false,
-                msg: 'Servicio de compañía no encontrado'
-            });
-        }
-        
-        if (img && typeof img === 'string') {
-            await saveImage(img, service._id, "companyService-img");
-            service.img = `${service._id}.webp`;
-            await service.save();
-          }
-
+        const service = await companyService.updateService(id, updates);
         res.json({
             success: true,
             data: service
@@ -92,7 +64,7 @@ const updateCompanyService = async (req, res = response) => {
         console.error(error);
         res.status(500).json({
             success: false,
-            msg: 'Error al actualizar el servicio de compañía'
+            msg: error.message
         });
     }
 };
@@ -100,14 +72,7 @@ const updateCompanyService = async (req, res = response) => {
 const deleteCompanyService = async (req, res = response) => {
     const { id } = req.params;
     try {
-        const service = await CompanyService.findById(id);
-        if (!service) {
-            return res.status(404).json({
-                success: false,
-                msg: 'Servicio de compañía no encontrado'
-            });
-        }
-        await CompanyService.findByIdAndDelete(id);
+        await companyService.deleteService(id);
         res.json({
             success: true,
             msg: 'Servicio de compañía eliminado'
@@ -116,7 +81,7 @@ const deleteCompanyService = async (req, res = response) => {
         console.error(error);
         res.status(500).json({
             success: false,
-            msg: 'Error al eliminar el servicio de compañía'
+            msg: error.message
         });
     }
 };
