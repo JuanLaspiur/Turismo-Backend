@@ -34,6 +34,7 @@ const getTabloideById = async (req, res = response) => {
 
 const createTabloide = async (req, res = response) => {
   try {
+    console.log('[depure] Entré al metodo crearTalbloide')
     const tabloide = await tabloideService.createTabloide(req.body);
     res.status(201).json({
       msg: 'Tabloide created successfully',

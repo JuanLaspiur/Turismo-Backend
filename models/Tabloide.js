@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 
 const tabloideSchema = new Schema({
   nro_posicion: {
-    type: String,
+    type: Number,
     required: true,
   },
   status: {

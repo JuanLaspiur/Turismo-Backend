@@ -13,6 +13,7 @@ const tabloideValidations = require("../middlewares/tabloide_validator_routes");
 const router = Router();
 
 router.post("/", tabloideValidations.createTabloide, handleValidationErrors, createTabloide);
+
 router.get("/", getTabloides);
 router.get("/:id", getTabloideById);
 router.put("/:id", updateTabloide);
