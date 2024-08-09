@@ -1,5 +1,5 @@
 const Company = require('../models/Company');
-import { saveImage } from '../helpers/saveImageFunction'
+const { saveImage } = require('../helpers/saveImageFunction');
 
 
 const createCompany = async (companyData) => {
