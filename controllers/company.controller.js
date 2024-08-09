@@ -4,7 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-const saveImage = async (base64Data, companyID) => {
+const saveImage = async (base64Data, companyID, type) => {
+    console.log(`Saving image for type: ${type}`);
     const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
     if (!matches || matches.length !== 2) {
       return null;
@@ -12,18 +13,33 @@ const saveImage = async (base64Data, companyID) => {
     const ext = matches[1];
     const imageBuffer = Buffer.from(base64Data.replace(/^data:image\/[a-zA-Z]*;base64,/, ''), 'base64');
   
-    const uploadDir = path.join('./', 'assets', 'companies','img');
+    let uploadDir;
+    switch (type) {
+      case "img":
+        uploadDir = path.join('./', 'assets', 'companies', 'img');
+        break;
+      case "coverImg":
+        uploadDir = path.join('./', 'assets', 'companies', 'coverImg');
+        break;
+      default:
+        throw new Error(`Unsupported image type: ${type}`);
+    }
+  
+    console.log(`Upload directory: ${uploadDir}`);
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
   
     const fileName = `${companyID}.webp`;
     const filePath = path.join(uploadDir, fileName);
+    console.log(`Saving file to: ${filePath}`);
   
     await sharp(imageBuffer)
       .toFormat('webp')
       .toFile(filePath);
   };
+  
+  
 
 const getCompanies = async (req, res = response) => {
     try {
@@ -71,10 +87,16 @@ const createCompany = async (req, res = response) => {
         await company.save();
 
         if (img && typeof img === 'string') {
-            await saveImage(img, company._id);
+            await saveImage(img, company._id, "img");
             company.img = `${company._id}.webp`;
             await company.save();
           }
+        
+        if(coverImg && typeof coverImg === 'string' ){
+            await saveImage(coverImg, company._id, "coverImg");
+            company.coverImg = `${company._id}.webp`;
+            await company.save();
+        }    
 
         res.status(201).json({
             success: true,
@@ -101,10 +123,15 @@ const updateCompany = async (req, res = response) => {
         }
 
         if (img && typeof img === 'string') {
-            await saveImage(img, company._id);
+            await saveImage(img, company._id, "img");
             company.img = `${company._id}.webp`;
             await company.save();
           }
+              if(coverImg && typeof coverImg === 'string' ){
+            await saveImage(coverImg, company._id, "coverImg");
+            company.coverImg = `${company._id}.webp`;
+            await company.save();
+        }    
 
         res.json({
             success: true,
