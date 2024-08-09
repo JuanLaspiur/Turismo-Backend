@@ -1,7 +1,4 @@
 // services/userService.js
-const fs = require('fs');
-const path = require('path');
-const sharp = require('sharp');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
@@ -144,13 +141,6 @@ const uploadProfileImage = async (id, img) => {
   const fileName = await saveImage(img, id, "user-img");
   if (!fileName) {
     throw new Error('Invalid Base64 data');
-  }
-
-  if (user.img) {
-    const oldPath = path.join('./assets/userAvatar', user.img);
-    if (fs.existsSync(oldPath)) {
-      fs.unlinkSync(oldPath);
-    }
   }
 
   user.img = fileName;

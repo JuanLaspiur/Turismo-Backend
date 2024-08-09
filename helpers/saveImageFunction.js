@@ -47,7 +47,9 @@ const getUploadDirectory = (type) => {
       case "user-img":
         return path.join('./', 'assets', 'user-img');  
       case "tabloide-img":
-        return path.join('./', 'assets', 'tabloides');  
+        return path.join('./', 'assets', 'tabloides');
+      case "reference-img":
+         return path.join('./', 'assets', 'references');   
       default:
         throw new Error(`Unsupported image type: ${type} in helpers\saveImageFunction.js`);
     }
