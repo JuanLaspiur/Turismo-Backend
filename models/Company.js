@@ -1,21 +1,28 @@
 const { Schema, model } = require("mongoose");
 
-const companySchema = Schema({
+const companySchema = new Schema({
   name: { 
     type: String,
-    required:true 
-},
+    required: true 
+  },
   description: { 
     type: String,
-    required:true 
-},
+    required: true 
+  },
   img: {
-     type: String,
-     required:true 
-     },
-  coverImg: { type: String },
+    type: String,
+    required: true 
+  },
+  coverImg: { 
+    type: String 
+  },
+  services: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'CompanyService'
+    }
+  ]
 });
 
-// Falta agregar Catalogo de servicios. 
 module.exports = model("Company", companySchema);
 
