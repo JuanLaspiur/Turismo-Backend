@@ -28,7 +28,7 @@ const userSchema = Schema({
   role: {
     type: String,
     required: true,
-    enum: ['ADMIN_ROLE', 'USER_ROLE', 'SELLER_ROLE'],
+    enum: ['ADMIN_ROLE', 'USER_ROLE', 'GUEST_ROLE','COMPANY_ROLE'],
   },
   avatar: {
     type: String,
