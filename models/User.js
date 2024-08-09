@@ -30,7 +30,13 @@ const userSchema = Schema({
     required: true,
     enum: ['ADMIN_ROLE', 'USER_ROLE', 'GUEST_ROLE','COMPANY_ROLE'],
   },
-  avatar: {
+  company: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Company'
+    }
+  ],
+  avatar: { //falta hacerlo funcionar
     type: String,
   },
   recoveryToken: {
