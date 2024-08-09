@@ -44,6 +44,8 @@ const getUploadDirectory = (type) => {
         return path.join('./', 'assets', 'companies', 'img');
       case "company-coverImg":
         return path.join('./', 'assets', 'companies', 'coverImg');
+      case "companyService-img":
+        return path.join('./', 'assets', 'companies', 'companyService-img'); 
       case "user-img":
         return path.join('./', 'assets', 'user-img');  
       case "tabloide-img":

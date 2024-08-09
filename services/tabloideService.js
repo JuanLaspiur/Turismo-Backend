@@ -1,7 +1,4 @@
 // services/tabloideService.js
-const fs = require('fs');
-const path = require('path');
-const sharp = require('sharp');
 const Tabloide = require('../models/Tabloide');
 const { saveImage } = require('../helpers/saveImageFunction');
 

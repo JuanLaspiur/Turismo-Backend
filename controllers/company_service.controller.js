@@ -1,5 +1,6 @@
 const { response } = require("express");
 const CompanyService = require('../models/CompanyService');
+const { saveImage } = require('../helpers/saveImageFunction');
 
 const getCompaniesServices = async (req, res = response) => {
     try {
@@ -44,6 +45,13 @@ const createCompanyService = async (req, res = response) => {
     const { name, description, img, price } = req.body;
     try {
         const service = new CompanyService({ name, description, img, price });
+
+        if (img && typeof img === 'string') {
+            await saveImage(img, service._id, "companyService-img");
+            service.img = `${service._id}.webp`;
+            await service.save();
+          }
+
         await service.save();
         res.status(201).json({
             success: true,
@@ -69,6 +77,13 @@ const updateCompanyService = async (req, res = response) => {
                 msg: 'Servicio de compañía no encontrado'
             });
         }
+        
+        if (img && typeof img === 'string') {
+            await saveImage(img, service._id, "companyService-img");
+            service.img = `${service._id}.webp`;
+            await service.save();
+          }
+
         res.json({
             success: true,
             data: service
