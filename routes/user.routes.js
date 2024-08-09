@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const handleValidationErrors = require('../middlewares/validator_routes');
-// Controladores
+// Controller
 const {
   getUsers,
   getUserById,
@@ -12,8 +12,11 @@ const {
   resetPassword,
   uploadProfileImage,
 } = require('../controllers/user.controller');
-const userValidations = require('../middlewares/user_validator_routes');
 
+
+
+
+const userValidations = require('../middlewares/user_validator_routes');
 const router = Router();
 
 router.post('/', userValidations.createUser, handleValidationErrors, createUser);
