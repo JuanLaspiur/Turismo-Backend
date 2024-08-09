@@ -7,13 +7,13 @@ const createCompany = async (companyData) => {
   await company.save();
 
   if (companyData.img && typeof companyData.img === 'string') {
-    const imgFileName = await saveImage(companyData.img, company._id, "img");
+    const imgFileName = await saveImage(companyData.img, company._id, "company-img");
     company.img = imgFileName;
     await company.save();
   }
 
   if (companyData.coverImg && typeof companyData.coverImg === 'string') {
-    const coverImgFileName = await saveImage(companyData.coverImg, company._id, "coverImg");
+    const coverImgFileName = await saveImage(companyData.coverImg, company._id, "company-coverImg");
     company.coverImg = coverImgFileName;
     await company.save();
   }
@@ -28,13 +28,13 @@ const updateCompany = async (companyId, companyData) => {
   }
 
   if (companyData.img && typeof companyData.img === 'string') {
-    const imgFileName = await saveImage(companyData.img, company._id, "img");
+    const imgFileName = await saveImage(companyData.img, company._id, "company-img");
     company.img = imgFileName;
     await company.save();
   }
 
   if (companyData.coverImg && typeof companyData.coverImg === 'string') {
-    const coverImgFileName = await saveImage(companyData.coverImg, company._id, "coverImg");
+    const coverImgFileName = await saveImage(companyData.coverImg, company._id, "company-coverImg");
     company.coverImg = coverImgFileName;
     await company.save();
   }

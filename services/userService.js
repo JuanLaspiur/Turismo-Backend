@@ -7,33 +7,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { sendRecoveryEmail } = require('../helpers/mails');
 const { generateRecoveryCode } = require('../helpers/recoveryCode');
-
+const { saveImage } = require('../helpers/saveImageFunction');
 require('dotenv').config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 
-const saveImage = async (base64Data, userID) => {
-  const matches = base64Data.match(/^data:image\/([a-zA-Z]*);base64,/);
-  if (!matches || matches.length !== 2) {
-    return null;
-  }
 
-  const imageBuffer = Buffer.from(base64Data.replace(/^data:image\/[a-zA-Z]*;base64,/, ''), 'base64');
-
-  const uploadDir = path.join('./', 'assets', 'userAvatar');
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-  }
-
-  const fileName = `${userID}.webp`;
-  const filePath = path.join(uploadDir, fileName);
-
-  await sharp(imageBuffer)
-    .toFormat('webp')
-    .toFile(filePath);
-
-  return fileName;
-};
 
 const getUsers = async () => {
   return await User.find();
@@ -56,7 +35,7 @@ const createUser = async (body) => {
   const user = new User({ email, password: hashedPassword, ...rest });
 
   if (img) {
-    await saveImage(img, user._id);
+    await saveImage(img, user._id, "user-img");
     user.img = `${user._id}.webp`;
   }
 
@@ -77,7 +56,7 @@ const updateUser = async (id, body) => {
   }
 
   if(body.img) {
-    saveImage(body.img, id)
+    saveImage(body.img, id, "user-img")
     user.img = `${id}.webp`;
     await user.save();
   }
@@ -162,7 +141,7 @@ const uploadProfileImage = async (id, img) => {
     throw new Error('Base64 data is required');
   }
 
-  const fileName = await saveImage(img, id);
+  const fileName = await saveImage(img, id, "user-img");
   if (!fileName) {
     throw new Error('Invalid Base64 data');
   }
