@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const messageSchema = new Schema({
+const chatMessageSchema = new Schema({
   text:{
     type:String
   },
@@ -24,11 +24,11 @@ const messageSchema = new Schema({
 }
 })
 
-messageSchema.pre('save', function(next) {
+chatMessageSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
     next();
 });
 
-const Message = model('Message', messageSchema);
+const ChatMessage = model('ChatMessage', chatMessageSchema);
 
-module.exports = Message;
+module.exports = ChatMessage;
