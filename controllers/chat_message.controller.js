@@ -1,16 +1,11 @@
-const ChatMessage = require('../models/ChatMessage');
 const { response } = require("express");
+const chatMessageService = require('../services/chat_messageService');
 
 const createChatMessage = async (req, res = response) => {
     const { text, userId, chatId } = req.body;
 
     try {
-        const chatMessage = new ChatMessage({
-            text,
-            userId,
-            chatId
-        });
-        await chatMessage.save();
+        const chatMessage = await chatMessageService.createChatMessage(text, userId, chatId);
         return res.status(201).json({ success: true, data: chatMessage });
     } catch (error) {
         console.error('Error creando el mensaje del chat:', error);
@@ -21,8 +16,9 @@ const createChatMessage = async (req, res = response) => {
 const updateChatMessage = async (req, res = response) => {
     const { id } = req.params;
     const updateData = req.body;
+
     try {
-        const updatedChatMessage = await ChatMessage.findByIdAndUpdate(id, updateData, { new: true });
+        const updatedChatMessage = await chatMessageService.updateChatMessage(id, updateData);
         if (!updatedChatMessage) return res.status(404).json({ success: false, message: 'Mensaje no encontrado' });
         return res.status(200).json({ success: true, data: updatedChatMessage });
     } catch (error) {
@@ -35,7 +31,7 @@ const getChatMessages = async (req, res = response) => {
     const { id } = req.params;
 
     try {
-        const chatMessages = await ChatMessage.find({ id }).sort({ createdAt: 1 });
+        const chatMessages = await chatMessageService.getChatMessages(id);
         return res.status(200).json({ success: true, data: chatMessages });
     } catch (error) {
         console.error('Error obteniendo los mensajes del chat:', error);
@@ -47,7 +43,7 @@ const getChatMessageById = async (req, res = response) => {
     const { id } = req.params;
 
     try {
-        const chatMessage = await ChatMessage.findById(id);
+        const chatMessage = await chatMessageService.getChatMessageById(id);
         if (!chatMessage) return res.status(404).json({ success: false, message: 'Mensaje no encontrado' });
         return res.status(200).json({ success: true, data: chatMessage });
     } catch (error) {
@@ -60,7 +56,7 @@ const deleteChatMessage = async (req, res = response) => {
     const { id } = req.params;
 
     try {
-        const deletedChatMessage = await ChatMessage.findByIdAndDelete(id);
+        const deletedChatMessage = await chatMessageService.deleteChatMessage(id);
         if (!deletedChatMessage) return res.status(404).json({ success: false, message: 'Mensaje no encontrado' });
         return res.status(200).json({ success: true, data: deletedChatMessage });
     } catch (error) {

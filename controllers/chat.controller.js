@@ -1,15 +1,11 @@
-const Chat = require('../models/Chat');
 const { response } = require("express");
+const chatService = require('../services/chatService');
 
 const createChat = async (req, res = response) => {
     const { userId, otherUser } = req.body;
 
     try {
-        const chat = new Chat({
-            userId,
-            otherUser
-        });
-        await chat.save();
+        const chat = await chatService.createChat(userId, otherUser);
         return res.status(201).json({ success: true, data: chat });
     } catch (error) {
         console.error('Error creando el chat:', error);
@@ -22,7 +18,7 @@ const updateChat = async (req, res = response) => {
     const updateData = req.body;
 
     try {
-        const updatedChat = await Chat.findByIdAndUpdate(id, updateData, { new: true });
+        const updatedChat = await chatService.updateChat(id, updateData);
         if (!updatedChat) return res.status(404).json({ success: false, message: 'Chat no encontrado' });
         return res.status(200).json({ success: true, data: updatedChat });
     } catch (error) {
@@ -33,7 +29,7 @@ const updateChat = async (req, res = response) => {
 
 const getChats = async (req, res = response) => {
     try {
-        const chats = await Chat.find();
+        const chats = await chatService.getChats();
         return res.status(200).json({ success: true, data: chats });
     } catch (error) {
         console.error('Error obteniendo los chats:', error);
@@ -45,7 +41,7 @@ const getChatById = async (req, res = response) => {
     const { id } = req.params;
 
     try {
-        const chat = await Chat.findById(id);
+        const chat = await chatService.getChatById(id);
         if (!chat) return res.status(404).json({ success: false, message: 'Chat no encontrado' });
         return res.status(200).json({ success: true, data: chat });
     } catch (error) {
@@ -58,7 +54,7 @@ const deleteChat = async (req, res = response) => {
     const { id } = req.params;
 
     try {
-        const deletedChat = await Chat.findByIdAndDelete(id);
+        const deletedChat = await chatService.deleteChat(id);
         if (!deletedChat) return res.status(404).json({ success: false, message: 'Chat no encontrado' });
         return res.status(200).json({ success: true, data: deletedChat });
     } catch (error) {
@@ -74,4 +70,3 @@ module.exports = {
     getChatById,
     deleteChat
 };
-
