@@ -19,13 +19,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', Routes);
 
 app.get('/', (req, res) => {
-  res.send('¡Hola, Mundo!');
+  res.send('¡Hola, Mundo! Bienvenido a Turismo_app');
 });
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
 
+// Socket io creado pero todavia no probado el funcionamiento.
 const server = createServer(app);
 const io = new Server(server, {
   pingTimeout: 60000,
