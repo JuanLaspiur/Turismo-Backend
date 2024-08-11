@@ -19,6 +19,6 @@ router.use('/comments', commentRoute);
 router.use('/companies', companyRoute);
 router.use('/company_services', company_serviceRoute);
 router.use('/chats', chatRoute);
-router.use('/chat_messages', chat_messageRoute)
+router.use('/chat_messages', chat_messageRoute);
 
 module.exports = router;

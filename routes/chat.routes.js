@@ -8,10 +8,10 @@ const {
     deleteChat
 } = require('../controllers/chat.controller');
 
-// const commentValidations = require('../middlewares/comment_validator_routes');
+const chatValidations = require('../middlewares/chat_validator_routes');
 const router = Router();
 
-router.post('/', createChat);       
+router.post('/',chatValidations.createChat, handleValidationErrors ,createChat);       
 router.get('/', getChats);           // Read all
 router.get('/:id', getChatById);    // Read one
 router.put('/:id', updateChat);    // Update

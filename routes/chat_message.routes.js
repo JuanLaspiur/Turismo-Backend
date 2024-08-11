@@ -8,10 +8,10 @@ const {
     deleteChatMessage
 } = require('../controllers/chat_message.controller');
 
-// const commentValidations = require('../middlewares/comment_validator_routes');
+const chatMessageValidations = require('../middlewares/chatMessage_validator_routes');
 const router = Router();
 
-router.post('/', createChatMessage);       
+router.post('/',chatMessageValidations.createChatMessage,handleValidationErrors, createChatMessage);       
 router.get('/', getChatMessages);           // Read all
 router.get('/:id', getChatMessageById);    // Read one
 router.put('/:id', updateChatMessage);    // Update
