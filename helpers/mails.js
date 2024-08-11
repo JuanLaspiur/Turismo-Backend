@@ -1,4 +1,3 @@
-// config/emailHelper.js
 const nodemailer = require('nodemailer');
 
 // Configuración del transportador
