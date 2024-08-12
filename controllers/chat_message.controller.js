@@ -27,11 +27,11 @@ const updateChatMessage = async (req, res = response) => {
     }
 };
 
-const getChatMessages = async (req, res = response) => {
-    const { id } = req.params;
+const getChatMessagesByChatId = async (req, res = response) => {
+    const { chatId } = req.params;
 
     try {
-        const chatMessages = await chatMessageService.getChatMessages(id);
+        const chatMessages = await chatMessageService.getChatMessagesByChatId(chatId);
         return res.status(200).json({ success: true, data: chatMessages });
     } catch (error) {
         console.error('Error obteniendo los mensajes del chat:', error);
@@ -68,7 +68,7 @@ const deleteChatMessage = async (req, res = response) => {
 module.exports = {
     createChatMessage,
     updateChatMessage,
-    getChatMessages,
+    getChatMessagesByChatId,
     getChatMessageById,
     deleteChatMessage
 };

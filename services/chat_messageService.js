@@ -9,8 +9,8 @@ const updateChatMessage = async (id, updateData) => {
     return await ChatMessage.findByIdAndUpdate(id, updateData, { new: true });
 };
 
-const getChatMessages = async (chatId) => {
-    return await ChatMessage.find({ chatId }).sort({ createdAt: 1 });
+const getChatMessagesByChatId = async (chatId) => {
+    return await ChatMessage.find({ chatId });
 };
 
 const getChatMessageById = async (id) => {
@@ -24,7 +24,7 @@ const deleteChatMessage = async (id) => {
 module.exports = {
     createChatMessage,
     updateChatMessage,
-    getChatMessages,
+    getChatMessagesByChatId,
     getChatMessageById,
     deleteChatMessage
 };
