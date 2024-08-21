@@ -27,7 +27,7 @@ const destinoSchema = new Schema({
     max: 5,
     default: 0
   },
-  reference: [ // opionion de usuario
+  reference: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Reference'
