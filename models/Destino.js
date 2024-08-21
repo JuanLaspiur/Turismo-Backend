@@ -38,6 +38,12 @@ const destinoSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'Comment'
     }
+  ],
+  city:[
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'City'
+    }
   ]
 }, { timestamps: true });
 
